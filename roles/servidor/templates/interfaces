@@ -1,0 +1,28 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug ens3
+iface ens3 inet dhcp
+
+# Privada 1
+allow_hotplug ens8
+auto ens8
+iface ens8 inet static
+        address {{privada1}}
+        netmask {{mascara}}
+        post-up iptables -t nat -A POSTROUTING -s {{direccion_privada1}} -o {{salida}} -j MASQUERADE
+
+# Privada 2
+allow_hotplug ens9
+auto ens9
+iface ens9 inet static
+        address {{privada2}}
+        netmask {{mascara}}
+        post-up iptables -t nat -A POSTROUTING -s {{direccion_privada2}} -o {{salida}} -j MASQUERADE

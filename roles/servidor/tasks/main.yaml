@@ -1,0 +1,46 @@
+- name: "instalar paquetes"
+  apt:
+    pkg:
+      - isc-dhcp-server
+      - iptables
+- name: "configurar network/interfaces"
+  template:
+    src: interfaces
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - reiniciar maquina
+
+- name: "activar el bit de forwarding"
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+
+- name: "Añadir clave pública ssh"
+  authorized_key:
+    user: debian
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    
+- name: "configurar /etc/dhcp/dhcpd.conf"
+  template:
+    src: dhcpd.conf
+    dest: /etc/dhcp/dhcpd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - reiniciar servicio
+
+- name: "configurar /etc/default/isc-dhcp-server"
+  template:
+    src: isc-dhcp-server
+    dest: /etc/default/isc-dhcp-server
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - reiniciar servicio
