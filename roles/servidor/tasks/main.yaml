@@ -19,12 +19,6 @@
     value: "1"
     sysctl_set: yes
 
-- name: "Añadir clave pública ssh"
-  authorized_key:
-    user: debian
-    state: present
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    
 - name: "configurar /etc/dhcp/dhcpd.conf"
   template:
     src: dhcpd.conf
